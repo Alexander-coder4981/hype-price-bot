@@ -8,7 +8,7 @@ from google.oauth2 import service_account
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 CHAT_ID = os.getenv("CHANNEL_CHAT_ID")
 COIN = os.getenv("COIN", "hype")
-COIN_ID = os.getenv("COIN_ID", "hype-hype")
+COIN_ID = os.getenv("COIN_ID", "hypec-hype")   # ✅ правильний coin_id для HYPE
 VS = os.getenv("VS_CURRENCY", "usd").upper()
 
 if not BOT_TOKEN or not CHAT_ID:
@@ -30,15 +30,17 @@ if cred_env:
     db = firestore.Client(credentials=credentials, project=creds_json["project_id"])
 
 # -------------------- UTILS --------------------
-def format_delta(new, old):
+def format_delta(new, old, emoji_up, emoji_down, is_price=False):
     if old is None:
         return "(—)"
     diff = new - old
     perc = (diff / old * 100) if old != 0 else 0
     if diff > 0:
-        return f"(+{perc:.2f}% 🔼)"
+        sign = "+"
+        return f"({sign}{perc:.2f}% {emoji_up})" if not is_price else f"({sign}{perc:.2f}% 📈)"
     elif diff < 0:
-        return f"(-{abs(perc):.2f}% 🔽)"
+        sign = "-"
+        return f"({sign}{abs(perc):.2f}% {emoji_down})" if not is_price else f"({sign}{abs(perc):.2f}% 📉)"
     else:
         return "(0.00%)"
 
@@ -69,13 +71,13 @@ def fetch_price():
 # -------------------- TELEGRAM --------------------
 def send_message(text):
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
-    payload = {
+    data = {
         "chat_id": CHAT_ID,
         "text": text,
         "parse_mode": "Markdown",
         "disable_web_page_preview": True
     }
-    requests.post(url, json=payload, timeout=15)
+    requests.post(url, data=data, timeout=10)
 
 # -------------------- MAIN --------------------
 def main():
@@ -88,9 +90,9 @@ def main():
         old_data = doc.to_dict() if doc.exists else None
         doc_ref.set(new_data)
 
-    price_delta = format_delta(new_data["price"], old_data.get("price") if old_data else None)
-    volume_delta = format_delta(new_data["volume_24h"], old_data.get("volume_24h") if old_data else None)
-    cap_delta = format_delta(new_data["market_cap"], old_data.get("market_cap") if old_data else None)
+    price_delta = format_delta(new_data["price"], old_data.get("price") if old_data else None, "", "", is_price=True)
+    volume_delta = format_delta(new_data["volume_24h"], old_data.get("volume_24h") if old_data else None, "🔼", "🔽")
+    cap_delta = format_delta(new_data["market_cap"], old_data.get("market_cap") if old_data else None, "🔼", "🔽")
 
     msg = (
         f"💰 HYPE price {format_number(new_data['price'])} {price_delta}\n"
@@ -100,7 +102,6 @@ def main():
         f"[Development](https://www.digisol.agency/?utm_source=telegram&utm_medium=post&utm_campaign=TG+Hype+Price+Bot&utm_id=TG+Hype+Price+Bot) | "
         f"[Subscribe](https://t.me/hype_coin_price)"
     )
-
     send_message(msg)
     print("✅ Message sent!")
 
