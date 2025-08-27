@@ -2,8 +2,8 @@ name: HYPE Price Bot
 
 on:
   schedule:
-    - cron: "0 * * * *"   # кожну годину
-  workflow_dispatch:       # щоб можна було запустити вручну
+    - cron: "0 * * * *"   # раз на годину
+  workflow_dispatch:       # можна вручну запустити
 
 jobs:
   run-bot:
@@ -24,7 +24,7 @@ jobs:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN_HYPE }}
           CHANNEL_CHAT_ID: ${{ secrets.CHANNEL_CHAT_ID_HYPE }}
           COIN: hype
-          COIN_ID: hype-hype   # треба перевірити точний ID на CoinPaprika
+          COIN_ID: hypec-hype   # ✅ правильний ID
           VS_CURRENCY: usd
           GOOGLE_APPLICATION_CREDENTIALS_JSON: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_JSON }}
         run: python main.py
