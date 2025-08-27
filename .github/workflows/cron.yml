@@ -2,26 +2,29 @@ name: HYPE Price Bot
 
 on:
   schedule:
-    - cron: "0 * * * *"   # кожні 60 хв
-  workflow_dispatch:       # запуск вручну
+    - cron: "0 * * * *"   # кожну годину
+  workflow_dispatch:       # щоб можна було запустити вручну
 
 jobs:
-  run-hype-bot:
+  run-bot:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
+
       - name: Install dependencies
         run: pip install -r requirements.txt
+
       - name: Run HYPE bot
         env:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN_HYPE }}
           CHANNEL_CHAT_ID: ${{ secrets.CHANNEL_CHAT_ID_HYPE }}
           COIN: hype
-          COIN_ID: hype-hype
+          COIN_ID: hype-hype   # треба перевірити точний ID на CoinPaprika
           VS_CURRENCY: usd
           GOOGLE_APPLICATION_CREDENTIALS_JSON: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_JSON }}
         run: python main.py
