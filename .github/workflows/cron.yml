@@ -24,7 +24,7 @@ jobs:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN_HYPE }}
           CHANNEL_CHAT_ID: ${{ secrets.CHANNEL_CHAT_ID_HYPE }}
           COIN: hype
-          COIN_ID: hypec-hype   # ✅ правильний ID
+          COIN_ID: hype-hyperliquid   # ✅ правильний ID
           VS_CURRENCY: usd
           GOOGLE_APPLICATION_CREDENTIALS_JSON: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_JSON }}
         run: python main.py
