@@ -8,7 +8,7 @@ from google.oauth2 import service_account
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 CHAT_ID = os.getenv("CHANNEL_CHAT_ID")
 COIN = os.getenv("COIN", "hype")
-COIN_ID = os.getenv("COIN_ID", "hypec-hype")   # ✅ правильний coin_id для HYPE
+COIN_ID = os.getenv("COIN_ID", "hype-hyperliquid")   # ✅ правильний coin_id для HYPE
 VS = os.getenv("VS_CURRENCY", "usd").upper()
 
 if not BOT_TOKEN or not CHAT_ID:
